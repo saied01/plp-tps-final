@@ -1,0 +1,55 @@
+Queremos demostrar:
+
+forall e:: Expr. cantLit e = S (cantOp e)
+
+Para demostrarlo usamos induccion.
+Definimos el predicado unario:
+
+forall e:: P(e)
+
+Donde P(e) -> Expr. cantLit e = S (cantOp e)
+
+Entonces queremos demostrarlo para los casos base y caso inductivo (Suma nada mas por enunciado).
+
+----------- CASOS BASE: ----------------------
+a- P(Const _)
+
+=> qvq. cantLit (Const _) = S (cantOp (Const _))
+
+cantLit (Const _)  {L1}=  S Z  {O1}=  S (cantOp (Const _))
+
+b- P(Rango _ _)
+
+=> qvq. cantLit (Rango _ _) = S (cantOp (Rango _ _))
+
+cantLit (Rango _ _)  {L2}=  S Z  {O2}=  S (cantOp (Rango _ _))
+
+---------- CASOS BASE DEMOSTRADOS -------------
+
+
+---------- CASO INDUCTIVO (Suma) -------------
+Teniamos nuestro predicado unario P(e)
+
+Ahora para demostrar el caso inductivo, tenemos que dado:
+Existen a,b::Expr. P(a) AND P(b)  ==> qvq. P(Suma a b)
+
+P(Suma a b) -> cantLit (Suma a b) = S (cantOp (Suma a b))
+
+Entonces escrito de una manera mas simple sabemos, por HI, que:
+
+cantLit a = S ( cantOp a )
+cantLit b = S ( cantOp b ).
+
+Del lado izquierdo entonces tenemos:
+
+cantLit ( Suma a b )
+{L3}        = suma ( cantLit a ) ( cantLit b )
+{HI}        = suma ( S cantOp a ) ( cantLit b )
+{HI}        = suma ( S cantOp a ) ( S cantOp b )
+{S2}        = S ( suma ( cantOp a) ( S cantOp b ))
+{CONMUT}    = S ( suma ( S cantOp b ) ( cantOp a ))
+{S2}        = S (S ( suma ( cantOp b) (cantOp a )))
+{CONMUT}    = S (S ( suma ( cantOp a ) ( cantOp b )))
+{O3}        = S (cantOp (Suma a b))
+
+---------- CASOS INDUCTIVO DEMOSTRADO -------------
