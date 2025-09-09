@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-overlapping-patterns #-}
 -- | Un `Histograma` es una estructura de datos que permite contar cuántos valores hay en cada rango.
 -- @vacio n (a, b)@ devuelve un histograma vacío con n+2 casilleros:
 --
@@ -33,7 +34,7 @@ data Histograma = Histograma Float Float [Int]
 -- Require que @l < u@ y @n >= 1@.
 -- vacio :: Int -> (Float, Float) -> Histograma
 vacio :: Int -> (Float, Float) -> Histograma
-vacio n (l, u) 
+vacio n (l, u)
   | n >= 1 && l < u = Histograma l u (replicate (n + 2) 0)
   | otherwise = error "vacio: requiere n >= 1 y l < u"
 
@@ -52,7 +53,7 @@ agregar :: Float -> Histograma -> Histograma
 agregar x (Histograma i t xs)  = (Histograma i t (actualizarElem indice f xs))
     where
       f x = x + 1
-      indice = averiguarIndiceDeX x i t ((length xs) - 1) 
+      indice = averiguarIndiceDeX x i t ((length xs) - 1)
 
 -- | Arma un histograma a partir de una lista de números reales con la cantidad de casilleros y rango indicados.
 histograma :: Int -> (Float, Float) -> [Float] -> Histograma
@@ -62,6 +63,7 @@ histograma n (i, t) xs = foldr agregar obj_histograma xs
 
 -- | Un `Casillero` representa un casillero del histograma con sus límites, cantidad y porcentaje.
 -- Invariante: Sea @Casillero m1 m2 c p@ entonces @m1 < m2@, @c >= 0@, @0 <= p <= 100@
+--               Casillero piso  techo cantidad porcentaje
 data Casillero = Casillero Float Float Int Float
   deriving (Show, Eq)
 
@@ -83,4 +85,12 @@ casPorcentaje (Casillero _ _ _ p) = p
 
 -- | Dado un histograma, devuelve la lista de casilleros con sus límites, cantidad y porcentaje.
 casilleros :: Histograma -> [Casillero]
-casilleros _ = error "COMPLETAR EJERCICIO 6"
+casilleros (Histograma piso saltos xs) = zipWith f [0..] xs
+  where
+    total = fromIntegral (sum xs)
+    f indice x
+      | indice == 0 = Casillero infinitoNegativo  piso  x  (fromIntegral x * ( 100 / total))
+      | indice == (length xs-1) =  Casillero (piso + saltos*(fromIntegral indice-1)) infinitoPositivo x (fromIntegral x * ( 100 / total))
+      | otherwise = Casillero (piso + saltos*(fromIntegral indice-1)) (piso + saltos*fromIntegral indice) x (fromIntegral x * ( 100 / total))
+
+
