@@ -31,16 +31,34 @@ data Histograma = Histograma Float Float [Int]
 -- | Inicializa un histograma vacío con @n@ casilleros para representar
 -- valores en el rango y 2 casilleros adicionales para los valores fuera del rango.
 -- Require que @l < u@ y @n >= 1@.
+-- vacio :: Int -> (Float, Float) -> Histograma
 vacio :: Int -> (Float, Float) -> Histograma
-vacio n (l, u) = error "COMPLETAR EJERCICIO 3"
+vacio n (l, u) 
+  | n >= 1 && l < u = Histograma l u (replicate (n + 2) 0)
+  | otherwise = error "vacio: requiere n >= 1 y l < u"
+
+--                         x       piso     salto      indice mas alto       resultado
+-- averiguarIndiceDeX :: Float -> Float ->  Float ->        Int      ->      Int
+averiguarIndiceDeX :: Float -> Float -> Float -> Int -> Int
+averiguarIndiceDeX x piso salto indiceActual
+  | x >= piso + (salto * (fromIntegral indiceActual - 1)) = indiceActual
+  | indiceActual == 0 = 0
+  | otherwise = averiguarIndiceDeX x piso salto (indiceActual-1)
+
+
 
 -- | Agrega un valor al histograma.
 agregar :: Float -> Histograma -> Histograma
-agregar x _ = error "COMPLETAR EJERCICIO 4"
+agregar x (Histograma i t xs)  = (Histograma i t (actualizarElem indice f xs))
+    where
+      f x = x + 1
+      indice = averiguarIndiceDeX x i t ((length xs) - 1) 
 
 -- | Arma un histograma a partir de una lista de números reales con la cantidad de casilleros y rango indicados.
 histograma :: Int -> (Float, Float) -> [Float] -> Histograma
-histograma n r xs = error "COMPLETAR EJERCICIO 5"
+histograma n (i, t) xs = foldr agregar obj_histograma xs
+  where
+    obj_histograma = vacio n (i, t)
 
 -- | Un `Casillero` representa un casillero del histograma con sus límites, cantidad y porcentaje.
 -- Invariante: Sea @Casillero m1 m2 c p@ entonces @m1 < m2@, @c >= 0@, @0 <= p <= 100@
