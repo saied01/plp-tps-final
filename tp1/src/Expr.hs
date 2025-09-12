@@ -54,14 +54,14 @@ foldExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
     rec = foldExpr fCon fRang fSum fRest fMult fDiv
 
 
-
 eval :: Expr -> G Float
-eval = foldExpr (\x g -> (x,g)) (\x y g -> dameUno (x,y) g)
-                (\f1 f2 g -> (fst (f1 g) + fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
-                (\f1 f2 g -> (fst (f1 g) - fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
-                (\f1 f2 g -> (fst (f1 g) * fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
-                (\f1 f2 g -> (fst (f1 g) / fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
-
+eval = foldExpr fCon fRang fSum fRest fMult fDiv
+      where fCon x g = (x,g)
+            fRang x y g = dameUno (x,y) g
+            fSum f1 f2 g = (fst (f1 g) + fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g))))
+            fRest f1 f2 g = (fst (f1 g) - fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g))))
+            fMult f1 f2 g = (fst (f1 g) * fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g))))
+            fDiv f1 f2 g = (fst (f1 g) / fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g))))
 
 -- | @armarHistograma m n f g@ arma un histograma con @m@ casilleros
 -- a partir del resultado de tomar @n@ muestras de @f@ usando el generador @g@.
