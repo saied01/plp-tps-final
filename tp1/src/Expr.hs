@@ -38,7 +38,7 @@ recrExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
 
 -- foldExpr :: ... anotar el tipo ...
 --foldExpr = error "COMPLETAR EJERCICIO 7"
-foldExpr :: (Float-> b) -> (Float-> Float -> b) -> 
+foldExpr :: (a-> b) -> (a-> a -> b) -> 
             (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> Expr -> b
 foldExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
                 Const x     -> fCon x
@@ -53,9 +53,11 @@ foldExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
 
 -- | Evaluar expresiones dado un generador de números aleatorios
 eval :: Expr -> G Float
-eval = (\gen -> foldExpr (id) (\x y -> dameUno (x,y) gen) (\acc1 acc2 -> acc1 + acc2)
-                (\acc1 acc2 -> acc1 + acc2) (\acc1 acc2 -> acc1 - acc2)
-                (\acc1 acc2 -> acc1 * acc2) (\acc1 acc2 -> acc1 / acc2))
+eval = foldExpr (\x g -> x) (\x y g -> dameUno (x,y) g)
+                (\f1 f2 g -> (fst (f1 g) + fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
+                (\f1 f2 g -> (fst (f1 g) - fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
+                (\f1 f2 g -> (fst (f1 g) * fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
+                (\f1 f2 g -> (fst (f1 g) / fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
 
 -- | @armarHistograma m n f g@ arma un histograma con @m@ casilleros
 -- a partir del resultado de tomar @n@ muestras de @f@ usando el generador @g@.
