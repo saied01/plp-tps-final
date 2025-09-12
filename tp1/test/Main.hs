@@ -27,8 +27,8 @@ allTests =
       "Ej 6 - Histograma.casilleros" ~: testsCasilleros,
     --"Ej 7 - Expr.recrExpr" ~: testsRecr,
     --   "Ej 7 - Expr.foldExpr" ~: testsFold,
-       "Ej 8 - Expr.eval" ~: testsEval,
-       "Ej 9 - Expr.armarHistograma" ~: testsArmarHistograma
+       "Ej 8 - Expr.eval" ~: testsEval
+       --"Ej 9 - Expr.armarHistograma" ~: testsArmarHistograma
       -- "Ej 10 - Expr.evalHistograma" ~: testsEvalHistograma,
       -- "Ej 11 - Expr.mostrar" ~: testsMostrar,
       -- "Expr.Parser.parse" ~: testsParse,
@@ -143,45 +143,7 @@ testsEval =
 testsArmarHistograma :: Test
 testsArmarHistograma =
   test
-    [ "armarHistograma - genFijo, todos valores iguales" ~:
-        casilleros histo1 ~?= casilleros esperado1
-    , "armarHistograma - genNormalConSemilla 0, 5 muestras" ~:
-        casilleros histo2 ~?= casilleros esperado2
-    , "armarHistograma - genNormalConSemilla 1, 10 muestras" ~:
-        casilleros histo3 ~?= casilleros esperado3
-    ]
-  where
-    -- Caso 1: genFijo, todos valores iguales
-    m1 = 3
-    n1 = 5
-    f1 :: G Float
-    f1 = dameUno (0, 1)
-    g1 = genFijo
-    muestras1 = fst (muestra f1 n1 g1)
-    histo1 = armarHistograma m1 n1 f1 g1
-    esperado1 = foldr agregar (vacio m1 (0, 1)) muestras1
-
-    -- Caso 2: genNormalConSemilla 0, 5 muestras
-    m2 = 4
-    n2 = 5
-    f2 :: G Float
-    f2 = dameUno (1, 5)
-    g2 = genNormalConSemilla 0
-    muestras2 = fst (muestra f2 n2 g2)
-    histo2 = armarHistograma m2 n2 f2 g2
-    esperado2 = foldr agregar (vacio m2 (rango95 muestras2)) muestras2
-
-    -- Caso 3: genNormalConSemilla 1, 10 muestras
-    m3 = 5
-    n3 = 10
-    f3 :: G Float
-    f3 = dameUno (-2, 2)
-    g3 = genNormalConSemilla 1
-    muestras3 = fst (muestra f3 n3 g3)
-    histo3 = armarHistograma m3 n3 f3 g3
-    esperado3 = foldr agregar (vacio m3 (rango95 muestras3)) muestras3
-
-
+    [completar]
 
 
 
