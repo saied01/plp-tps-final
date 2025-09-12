@@ -15,7 +15,6 @@ where
 import Generador
 import Histograma
 import Histograma (casilleros, histograma)
-import GHC.Tc.Utils.TcMType (candidateKindVars)
 
 -- | Expresiones aritméticas con rangos
 data Expr
@@ -90,8 +89,16 @@ evalHistograma casilleros cantDeEvaluacinoes expr = armarHistograma casilleros c
 
 -- | Mostrar las expresiones, pero evitando algunos paréntesis innecesarios.
 -- En particular queremos evitar paréntesis en sumas y productos anidados.
+mostrar' :: Expr -> String
+mostrar' = foldExpr (\x -> show x) (\x y -> show x ++ "~" ++ show y)
+                    (\ac1 ac2 -> "(" ++ ac1 ++ " + " ++ ac2 ++ ")")
+                    (\ac1 ac2 -> "(" ++ ac1 ++ " - " ++ ac2 ++ ")")
+                    (\ac1 ac2 -> "(" ++ ac1 ++ " * " ++ ac2 ++ ")")
+                    (\ac1 ac2 -> "(" ++ ac1 ++ " / " ++ ac2 ++ ")")
+
 mostrar :: Expr -> String
-mostrar = error "COMPLETAR EJERCICIO 11"
+mostrar xs = take (length xs' - 2) $ drop (1) xs'
+  where xs' = mostrar' xs
 
 data ConstructorExpr = CEConst | CERango | CESuma | CEResta | CEMult | CEDiv
   deriving (Show, Eq)
