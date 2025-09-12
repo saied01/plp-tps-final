@@ -40,6 +40,7 @@ recrExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
 
 -- foldExpr :: ... anotar el tipo ...
 --foldExpr = error "COMPLETAR EJERCICIO 7"
+<<<<<<< Updated upstream
 -- FoldExpr monádico para G Float
 -- foldExprG adaptado a tu tipo G = Gen -> (Float, Gen)
 foldExpr :: (Float -> G Float)                   -- Const
@@ -50,6 +51,10 @@ foldExpr :: (Float -> G Float)                   -- Const
           -> (G Float -> G Float -> G Float)     -- Div
           -> Expr
           -> G Float
+=======
+foldExpr :: (Float -> b) -> (Float -> Float -> b) -> 
+            (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> Expr -> b
+>>>>>>> Stashed changes
 foldExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
     Const x     -> fCon x
     Rango x y   -> fRang (x, y)
@@ -87,6 +92,7 @@ divi x y g = a / b `seq` (a / b, g2)
 
 
 eval :: Expr -> G Float
+<<<<<<< Updated upstream
 eval = foldExpr
     (\x g -> (x, g))  -- Const
     dameUno            -- Rango
@@ -96,6 +102,13 @@ eval = foldExpr
     divi
 
 
+=======
+eval = foldExpr (\x g -> (x,g)) (\x y g -> dameUno (x,y) g)
+                (\f1 f2 g -> (fst (f1 g) + fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
+                (\f1 f2 g -> (fst (f1 g) - fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
+                (\f1 f2 g -> (fst (f1 g) * fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
+                (\f1 f2 g -> (fst (f1 g) / fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
+>>>>>>> Stashed changes
 
 -- | @armarHistograma m n f g@ arma un histograma con @m@ casilleros
 -- a partir del resultado de tomar @n@ muestras de @f@ usando el generador @g@.
