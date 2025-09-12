@@ -23,10 +23,17 @@ data Expr
   deriving (Show, Eq)
 
 -- recrExpr :: ... anotar el tipo ...
-recrExpr = error "COMPLETAR EJERCICIO 7"
+-- recrExpr = error "COMPLETAR EJERCICIO 7"
+recrExpr :: (Float-> b) -> (Float-> Float -> b) -> 
+            (Expr -> Expr -> b -> b -> b) -> (Expr -> Expr -> b -> b -> b) -> 
+            (Expr -> Expr -> b -> b -> b) -> (Expr -> Expr -> b -> b -> b) -> Expr -> b
 
 -- foldExpr :: ... anotar el tipo ...
-foldExpr = error "COMPLETAR EJERCICIO 7"
+--foldExpr = error "COMPLETAR EJERCICIO 7"
+foldExpr :: (Float-> b) -> (Float-> Float -> b) -> 
+            (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> Expr -> b
+             
+
 
 -- | Evaluar expresiones dado un generador de números aleatorios
 eval :: Expr -> G Float
