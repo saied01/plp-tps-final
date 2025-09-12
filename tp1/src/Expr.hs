@@ -27,14 +27,14 @@ data Expr
 recrExpr :: (Float-> b) -> (Float-> Float -> b) -> 
             (Expr -> Expr -> b -> b -> b) -> (Expr -> Expr -> b -> b -> b) -> 
             (Expr -> Expr -> b -> b -> b) -> (Expr -> Expr -> b -> b -> b) -> Expr -> b
-foldExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
+recrExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
                 Const x     -> fCon x
                 Rango x y   -> fRang x y
                 Suma e1 e2  -> fSum e1 e2 (rec e1) (rec e2)
                 Resta e1 e2 -> fRest e1 e2 (rec e1) (rec e2)
                 Mult e1 e2  -> fMult e1 e2 (rec e1) (rec e2)
                 Div e1 e2   -> fDiv e1 e2 (rec e1) (rec e2)
-  where rec = foldExpr fCon fRang fSum fRest fMult fDiv
+  where rec = recrExpr fCon fRang fSum fRest fMult fDiv
 
 -- foldExpr :: ... anotar el tipo ...
 --foldExpr = error "COMPLETAR EJERCICIO 7"

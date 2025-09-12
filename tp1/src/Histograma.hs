@@ -34,9 +34,11 @@ data Histograma = Histograma Float Float [Int]
 -- Require que @l < u@ y @n >= 1@.
 -- vacio :: Int -> (Float, Float) -> Histograma
 vacio :: Int -> (Float, Float) -> Histograma
-vacio n (l, u)
-  | n >= 1 && l < u = Histograma l u (replicate (n + 2) 0)
-  | otherwise = error "vacio: requiere n >= 1 y l < u"
+vacio cantidadDeElem (piso, techo)
+  | cantidadDeElem >= 1 && piso < techo = Histograma piso saltos (replicate (cantidadDeElem + 2) 0)
+  | otherwise = error "vacio: requiere cantidadDeElem >= 1 y l < u"
+  where
+    saltos = techo / (fromIntegral cantidadDeElem + piso)
 
 --                         x       piso     salto      indice mas alto       resultado
 -- averiguarIndiceDeX :: Float -> Float ->  Float ->        Int      ->      Int
@@ -87,10 +89,10 @@ casPorcentaje (Casillero _ _ _ p) = p
 casilleros :: Histograma -> [Casillero]
 casilleros (Histograma piso saltos xs) = zipWith f [0..] xs
   where
-    total = fromIntegral (sum xs)
+    total = if sum xs == 0 then 0 else 100 / fromIntegral (sum xs)
     f indice x
-      | indice == 0 = Casillero infinitoNegativo  piso  x  (fromIntegral x * ( 100 / total))
-      | indice == (length xs-1) =  Casillero (piso + saltos*(fromIntegral indice-1)) infinitoPositivo x (fromIntegral x * ( 100 / total))
-      | otherwise = Casillero (piso + saltos*(fromIntegral indice-1)) (piso + saltos*fromIntegral indice) x (fromIntegral x * ( 100 / total))
+      | indice == 0 = Casillero infinitoNegativo  piso  x  (fromIntegral x * total)
+      | indice == (length xs-1) =  Casillero (piso + saltos*(fromIntegral indice-1)) infinitoPositivo x (fromIntegral x * total)
+      | otherwise = Casillero (piso + saltos*(fromIntegral indice-1)) (piso + saltos*fromIntegral indice) x (fromIntegral x * total)
 
 

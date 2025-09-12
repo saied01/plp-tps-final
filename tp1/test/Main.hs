@@ -40,16 +40,14 @@ testsAlinearDerecha :: Test
 testsAlinearDerecha =
   test
     [ alinearDerecha 6 "hola" ~?= "  hola",
-      alinearDerecha 10 "incierticalc" ~?= "incierticalc",
-      completar
+      alinearDerecha 10 "incierticalc" ~?= "incierticalc"
     ]
 
 testsActualizarElem :: Test
 testsActualizarElem =
   test
     [ actualizarElem 0 (+ 10) [1, 2, 3] ~?= [11, 2, 3],
-      actualizarElem 1 (+ 10) [1, 2, 3] ~?= [1, 12, 3],
-      completar
+      actualizarElem 1 (+ 10) [1, 2, 3] ~?= [1, 12, 3]
     ]
 
 testsVacio :: Test
@@ -66,8 +64,7 @@ testsVacio =
               Casillero 2 4 0 0,
               Casillero 4 6 0 0,
               Casillero 6 infinitoPositivo 0 0
-            ],
-      completar
+            ]
     ]
 
 testsAgregar :: Test
@@ -94,15 +91,13 @@ testsAgregar =
                   Casillero 2 4 0 0,
                   Casillero 4 6 0 0,
                   Casillero 6 infinitoPositivo 0 0
-                ],
-          completar
+                ]
         ]
 
 testsHistograma :: Test
 testsHistograma =
   test
-    [ histograma 4 (1, 5) [1, 2, 3] ~?= agregar 3 (agregar 2 (agregar 1 (vacio 4 (1, 5)))),
-      completar
+    [ histograma 4 (1, 5) [1, 2, 3] ~?= agregar 3 (agregar 2 (agregar 1 (vacio 4 (1, 5))))
     ]
 
 testsCasilleros :: Test
@@ -121,8 +116,7 @@ testsCasilleros =
               Casillero 2.0 4.0 1 100.0,
               Casillero 4.0 6.0 0 0.0,
               Casillero 6.0 infinitoPositivo 0 0.0
-            ],
-      completar
+            ]
     ]
 
 testsRecr :: Test
