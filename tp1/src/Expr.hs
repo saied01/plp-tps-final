@@ -76,7 +76,8 @@ armarHistograma m n f g =  (histograma m (piso, techo) xs, gen')
 -- devuelve un histograma con @m@ casilleros y rango calculado con @rango95@ para abarcar el 95% de confianza de los valores.
 -- @n@ debe ser mayor que 0.
 evalHistograma :: Int -> Int -> Expr -> G Histograma
-evalHistograma m n expr = error "COMPLETAR EJERCICIO 10"
+evalHistograma m n expr = armarHistograma m n f
+  where f = eval expr
 
 -- Podemos armar histogramas que muestren las n evaluaciones en m casilleros.
 -- >>> evalHistograma 11 10 (Suma (Rango 1 5) (Rango 100 105)) (genNormalConSemilla 0)
