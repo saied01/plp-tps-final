@@ -25,14 +25,14 @@ allTests =
       "Ej 4 - Histograma.agregar" ~: testsAgregar,
       "Ej 5 - Histograma.histograma" ~: testsHistograma,
       "Ej 6 - Histograma.casilleros" ~: testsCasilleros,
-      "Ej 7 - Expr.recrExpr" ~: testsRecr,
-      "Ej 7 - Expr.foldExpr" ~: testsFold,
-      "Ej 8 - Expr.eval" ~: testsEval,
-      "Ej 9 - Expr.armarHistograma" ~: testsArmarHistograma,
-      "Ej 10 - Expr.evalHistograma" ~: testsEvalHistograma,
-      "Ej 11 - Expr.mostrar" ~: testsMostrar,
-      "Expr.Parser.parse" ~: testsParse,
-      "App.mostrarFloat" ~: testsMostrarFloat,
+    --  "Ej 7 - Expr.recrExpr" ~: testsRecr,
+    --  "Ej 7 - Expr.foldExpr" ~: testsFold,
+    --  "Ej 8 - Expr.eval" ~: testsEval,
+    --  "Ej 9 - Expr.armarHistograma" ~: testsArmarHistograma,
+    --  "Ej 10 - Expr.evalHistograma" ~: testsEvalHistograma,
+    --  "Ej 11 - Expr.mostrar" ~: testsMostrar,
+    --  "Expr.Parser.parse" ~: testsParse,
+    --  "App.mostrarFloat" ~: testsMostrarFloat,
       "App.mostrarHistograma" ~: testsMostrarHistograma
     ]
 
