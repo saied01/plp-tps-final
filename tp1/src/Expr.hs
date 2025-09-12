@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use (,)" #-}
 module Expr
   ( Expr (..),
     recrExpr,
@@ -24,9 +26,9 @@ data Expr
 
 -- recrExpr :: ... anotar el tipo ...
 -- recrExpr = error "COMPLETAR EJERCICIO 7"
-recrExpr :: (Float-> b) -> (Float-> Float -> b) -> 
-            (Expr -> Expr -> b -> b -> b) -> (Expr -> Expr -> b -> b -> b) -> 
-            (Expr -> Expr -> b -> b -> b) -> (Expr -> Expr -> b -> b -> b) -> Expr -> b
+recrExpr :: (Float-> G b) -> (Float-> Float -> G b) ->
+            (Expr -> Expr -> G b -> G b -> G b) -> (Expr -> Expr -> G b -> G b -> G b) ->
+            (Expr -> Expr -> G b -> G b -> G b) -> (Expr -> Expr -> G b -> G b -> G b) -> Expr -> G b
 recrExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
                 Const x     -> fCon x
                 Rango x y   -> fRang x y
@@ -38,26 +40,62 @@ recrExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
 
 -- foldExpr :: ... anotar el tipo ...
 --foldExpr = error "COMPLETAR EJERCICIO 7"
-foldExpr :: (a-> b) -> (a-> a -> b) -> 
-            (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> Expr -> b
+-- FoldExpr monádico para G Float
+-- foldExprG adaptado a tu tipo G = Gen -> (Float, Gen)
+foldExpr :: (Float -> G Float)                   -- Const
+          -> ((Float, Float) -> G Float)         -- Rango
+          -> (G Float -> G Float -> G Float)     -- Suma
+          -> (G Float -> G Float -> G Float)     -- Resta
+          -> (G Float -> G Float -> G Float)     -- Mult
+          -> (G Float -> G Float -> G Float)     -- Div
+          -> Expr
+          -> G Float
 foldExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
-                Const x     -> fCon x
-                Rango x y   -> fRang x y
-                Suma e1 e2  -> fSum (rec e1) (rec e2)
-                Resta e1 e2 -> fRest (rec e1) (rec e2)
-                Mult e1 e2  -> fMult (rec e1) (rec e2)
-                Div e1 e2   -> fDiv (rec e1) (rec e2)
-  where rec = foldExpr fCon fRang fSum fRest fMult fDiv
-             
+    Const x     -> fCon x
+    Rango x y   -> fRang (x, y)
+    Suma e1 e2  -> fSum (rec e1) (rec e2)
+    Resta e1 e2 -> fRest (rec e1) (rec e2)
+    Mult e1 e2  -> fMult (rec e1) (rec e2)
+    Div e1 e2   -> fDiv (rec e1) (rec e2)
+  where
+    rec = foldExpr fCon fRang fSum fRest fMult fDiv
+
+
+
 
 
 -- | Evaluar expresiones dado un generador de números aleatorios
+suma x y g = a + b `seq` (a + b, g2)
+  where
+    (a, g1) = x g
+    (b, g2) = y g1
+
+resta x y g = a - b `seq` (a - b, g2)
+  where
+    (a, g1) = x g
+    (b, g2) = y g1
+
+mult x y g = a * b `seq` (a * b, g2)
+  where
+    (a, g1) = x g
+    (b, g2) = y g1
+
+divi x y g = a / b `seq` (a / b, g2)
+  where
+    (a, g1) = x g
+    (b, g2) = y g1
+
+
 eval :: Expr -> G Float
-eval = foldExpr (\x g -> x) (\x y g -> dameUno (x,y) g)
-                (\f1 f2 g -> (fst (f1 g) + fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
-                (\f1 f2 g -> (fst (f1 g) - fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
-                (\f1 f2 g -> (fst (f1 g) * fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
-                (\f1 f2 g -> (fst (f1 g) / fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g)))))
+eval = foldExpr
+    (\x g -> (x, g))  -- Const
+    dameUno            -- Rango
+    suma
+    resta
+    mult
+    divi
+
+
 
 -- | @armarHistograma m n f g@ arma un histograma con @m@ casilleros
 -- a partir del resultado de tomar @n@ muestras de @f@ usando el generador @g@.
