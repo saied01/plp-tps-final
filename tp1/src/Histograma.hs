@@ -35,10 +35,11 @@ data Histograma = Histograma Float Float [Int]
 -- vacio :: Int -> (Float, Float) -> Histograma
 vacio :: Int -> (Float, Float) -> Histograma
 vacio cantidadDeElem (piso, techo)
-  | cantidadDeElem >= 1 && piso < techo = Histograma piso saltos (replicate (cantidadDeElem + 2) 0)
+  | cantidadDeElem >= 1 && piso < techo = Histograma piso salto (replicate (cantidadDeElem + 2) 0)
   | otherwise = error "vacio: requiere cantidadDeElem >= 1 y l < u"
   where
-    saltos = techo / (fromIntegral cantidadDeElem + piso)
+    salto = (techo - piso) / fromIntegral cantidadDeElem
+
 
 --                         x       piso     salto      indice mas alto       resultado
 -- averiguarIndiceDeX :: Float -> Float ->  Float ->        Int      ->      Int
@@ -59,9 +60,9 @@ agregar x (Histograma i t xs)  = (Histograma i t (actualizarElem indice f xs))
 
 -- | Arma un histograma a partir de una lista de números reales con la cantidad de casilleros y rango indicados.
 histograma :: Int -> (Float, Float) -> [Float] -> Histograma
-histograma n (i, t) xs = foldr agregar obj_histograma xs
+histograma casilleros (piso, techo) xs = foldr agregar obj_histograma xs
   where
-    obj_histograma = vacio n (i, t)
+    obj_histograma = vacio casilleros (piso, techo)
 
 -- | Un `Casillero` representa un casillero del histograma con sus límites, cantidad y porcentaje.
 -- Invariante: Sea @Casillero m1 m2 c p@ entonces @m1 < m2@, @c >= 0@, @0 <= p <= 100@

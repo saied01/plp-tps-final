@@ -15,6 +15,7 @@ where
 import Generador
 import Histograma
 import Histograma (casilleros, histograma)
+import GHC.Tc.Utils.TcMType (candidateKindVars)
 
 -- | Expresiones aritméticas con rangos
 data Expr
@@ -66,9 +67,9 @@ eval = foldExpr fCon fRang fSum fRest fMult fDiv
 -- | @armarHistograma m n f g@ arma un histograma con @m@ casilleros
 -- a partir del resultado de tomar @n@ muestras de @f@ usando el generador @g@.
 armarHistograma :: Int -> Int -> G Float -> G Histograma
-armarHistograma m n f g =  (histograma m (piso, techo) xs, gen')
+armarHistograma casilleros cantDeMuestras f g =  (histograma casilleros (piso, techo) xs, gen')
   where
-    (xs, gen') = muestra f n g
+    (xs, gen') = muestra f cantDeMuestras g -- f retorna valores, g
     (piso, techo) = rango95 xs 
 
 
@@ -76,7 +77,9 @@ armarHistograma m n f g =  (histograma m (piso, techo) xs, gen')
 -- devuelve un histograma con @m@ casilleros y rango calculado con @rango95@ para abarcar el 95% de confianza de los valores.
 -- @n@ debe ser mayor que 0.
 evalHistograma :: Int -> Int -> Expr -> G Histograma
-evalHistograma m n expr = error "COMPLETAR EJERCICIO 10"
+evalHistograma casilleros cantDeEvaluacinoes expr = armarHistograma casilleros cantDeEvaluacinoes expresionEvaluada
+  where
+    expresionEvaluada = eval expr
 
 -- Podemos armar histogramas que muestren las n evaluaciones en m casilleros.
 -- >>> evalHistograma 11 10 (Suma (Rango 1 5) (Rango 100 105)) (genNormalConSemilla 0)
