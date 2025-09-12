@@ -38,7 +38,7 @@ vacio cantidadDeElem (piso, techo)
   | cantidadDeElem >= 1 && piso < techo = Histograma piso saltos (replicate (cantidadDeElem + 2) 0)
   | otherwise = error "vacio: requiere cantidadDeElem >= 1 y l < u"
   where
-    saltos = techo / (fromIntegral cantidadDeElem + piso)
+    saltos = (techo - piso) / (fromIntegral cantidadDeElem)
 
 --                         x       piso     salto      indice mas alto       resultado
 -- averiguarIndiceDeX :: Float -> Float ->  Float ->        Int      ->      Int
