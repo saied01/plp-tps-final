@@ -87,18 +87,19 @@ evalHistograma casilleros cantDeEvaluacinoes expr = armarHistograma casilleros c
 -- >>> evalHistograma 11 10000 (Suma (Rango 1 5) (Rango 100 105)) (genNormalConSemilla 0)
 -- (Histograma 102.273895 0.5878462 [239,288,522,810,1110,1389,1394,1295,1076,793,520,310,254],<Gen>)
 
--- | Mostrar las expresiones, pero evitando algunos paréntesis innecesarios.
--- En particular queremos evitar paréntesis en sumas y productos anidados.
-mostrar' :: Expr -> String
-mostrar' = foldExpr (\x -> show x) (\x y -> show x ++ "~" ++ show y)
-                    (\ac1 ac2 -> "(" ++ ac1 ++ " + " ++ ac2 ++ ")")
-                    (\ac1 ac2 -> "(" ++ ac1 ++ " - " ++ ac2 ++ ")")
-                    (\ac1 ac2 -> "(" ++ ac1 ++ " * " ++ ac2 ++ ")")
-                    (\ac1 ac2 -> "(" ++ ac1 ++ " / " ++ ac2 ++ ")")
-
 mostrar :: Expr -> String
-mostrar xs = take (length xs' - 2) $ drop (1) xs'
-  where xs' = mostrar' xs
+mostrar = recrExpr (\x -> show x) (\x y -> show x ++ "~" ++ show y)
+                    (\con1 con2 ac1 ac2 -> maybeParen (constructor con1 `elem` [CEResta, CEDiv, CEMult]) ac1 ++ " + " ++ maybeParen (constructor con2 `elem` [CEResta, CEDiv, CEMult]) ac2)                   
+                    (\con1 con2 ac1 ac2 -> maybeParen (constructor con1 `elem` [CEResta, CEDiv, CEMult]) ac1 ++ " - " ++ maybeParen (constructor con2 `elem` [CEResta, CEDiv, CEMult]) ac2)                   
+                    (\con1 con2 ac1 ac2 -> maybeParen (constructor con1 `elem` [CEResta, CEDiv, CEMult]) ac1 ++ " * " ++ maybeParen (constructor con2 `elem` [CEResta, CEDiv, CEMult]) ac2)                   
+                    (\con1 con2 ac1 ac2 -> maybeParen (constructor con1 `elem` [CESuma, CEResta, CEDiv, CEMult]) ac1 ++ " / " ++ maybeParen (constructor con2 `elem` [CESuma, CEResta, CEDiv, CEMult]) ac2)
+
+
+
+
+
+
+
 
 data ConstructorExpr = CEConst | CERango | CESuma | CEResta | CEMult | CEDiv
   deriving (Show, Eq)
