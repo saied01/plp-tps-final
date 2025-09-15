@@ -11,6 +11,8 @@ Donde P(e) es el predicado unario -> Expr. cantLit e = S (cantOp e)
 
 Entonces queremos demostrarlo para los casos base y caso inductivo (Suma nada mas por enunciado).
 
+La estructura en la que hacemos induccion es e. Que e es una estructura de tipo Expr.
+
 ----------- CASOS BASE: ----------------------
 a- P(Const _)
 
