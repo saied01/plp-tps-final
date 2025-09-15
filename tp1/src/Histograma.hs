@@ -59,6 +59,8 @@ agregar x (Histograma i t xs)  = (Histograma i t (actualizarElem indice f xs))
       indice = averiguarIndiceDeX x i t ((length xs) - 1)
 
 -- | Arma un histograma a partir de una lista de números reales con la cantidad de casilleros y rango indicados.
+-- Como ya tenemos definidas las funciones para armar un histograma vacio, y una para agregar un valor a un histograma dado.
+-- Simplemente se agregan todos los valores a un hist. vacio usando foldr junto con la funcion agregar.
 histograma :: Int -> (Float, Float) -> [Float] -> Histograma
 histograma casilleros (piso, techo) xs = foldr agregar obj_histograma xs
   where
@@ -87,13 +89,20 @@ casPorcentaje :: Casillero -> Float
 casPorcentaje (Casillero _ _ _ p) = p
 
 -- | Dado un histograma, devuelve la lista de casilleros con sus límites, cantidad y porcentaje.
+-- Se construye la lista de casilleros a partir de la representación interna del histograma.
+-- Para cada posición de la lista de xs, `zipWith` combina el índice con la cantidad
+-- y genera el casillero correspondiente con sus límites y porcentaje.
+-- Tenemos tres casos ya que tenemos:
+-- 1- El primer casillero que va de -inf al primer valor.
+-- 2- El ultimo casillero que va del ultimo valor a +inf
+-- 3- El resto de casilleros del medio, que van de un valor al siguiente dependiendo del salto.
 casilleros :: Histograma -> [Casillero]
 casilleros (Histograma piso saltos xs) = zipWith f [0..] xs
   where
-    total = if sum xs == 0 then 0 else 100 / fromIntegral (sum xs)
+    porcentaje = if sum xs == 0 then 0 else 100 / fromIntegral (sum xs)
     f indice x
-      | indice == 0 = Casillero infinitoNegativo  piso  x  (fromIntegral x * total)
-      | indice == (length xs-1) =  Casillero (piso + saltos*(fromIntegral indice-1)) infinitoPositivo x (fromIntegral x * total)
-      | otherwise = Casillero (piso + saltos*(fromIntegral indice-1)) (piso + saltos*fromIntegral indice) x (fromIntegral x * total)
+      | indice == 0 = Casillero infinitoNegativo  piso  x  (fromIntegral x * porcentaje)
+      | indice == (length xs-1) =  Casillero (piso + saltos*(fromIntegral indice-1)) infinitoPositivo x (fromIntegral x * porcentaje)
+      | otherwise = Casillero (piso + saltos*(fromIntegral indice-1)) (piso + saltos*fromIntegral indice) x (fromIntegral x * porcentaje)
 
 
