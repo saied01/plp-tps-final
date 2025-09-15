@@ -60,7 +60,7 @@ agregar x (Histograma i t xs)  = (Histograma i t (actualizarElem indice f xs))
 
 -- | Arma un histograma a partir de una lista de números reales con la cantidad de casilleros y rango indicados.
 -- Como ya tenemos definidas las funciones para armar un histograma vacio, y una para agregar un valor a un histograma dado.
--- Simplemente se agregan todos los valores a un hist. vacio usando foldr junto con la funcion agregar.
+-- Simplemente se crea un histograma vacio y se agregan todos los valores usando foldr junto con la funcion agregar.
 histograma :: Int -> (Float, Float) -> [Float] -> Histograma
 histograma casilleros (piso, techo) xs = foldr agregar obj_histograma xs
   where
