@@ -7,7 +7,7 @@ Definimos el predicado unario:
 
 forall e:: P(e)
 
-Donde P(e) -> Expr. cantLit e = S (cantOp e)
+Donde P(e) es el predicado unario -> Expr. cantLit e = S (cantOp e)
 
 Entonces queremos demostrarlo para los casos base y caso inductivo (Suma nada mas por enunciado).
 
