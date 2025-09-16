@@ -59,8 +59,8 @@ agregar x (Histograma i t xs)  = (Histograma i t (actualizarElem indice f xs))
       indice = averiguarIndiceDeX x i t ((length xs) - 1)
 
 -- | Arma un histograma a partir de una lista de números reales con la cantidad de casilleros y rango indicados.
--- Como ya tenemos definidas las funciones para armar un histograma vacio, y una para agregar un valor a un histograma dado.
--- Simplemente se crea un histograma vacio y se agregan todos los valores usando foldr junto con la funcion agregar.
+-- Como ya tenemos definidas las funciones para armar un histograma vacío, y una para agregar un valor a un histograma dado,
+-- simplemente se crea un histograma vacío y se agregan todos los valores usando foldr junto con la función agregar.
 histograma :: Int -> (Float, Float) -> [Float] -> Histograma
 histograma casilleros (piso, techo) xs = foldr agregar obj_histograma xs
   where
@@ -90,7 +90,7 @@ casPorcentaje (Casillero _ _ _ p) = p
 
 -- | Dado un histograma, devuelve la lista de casilleros con sus límites, cantidad y porcentaje.
 -- Se construye la lista de casilleros a partir de la representación interna del histograma.
--- Para cada posición de la lista de xs, `zipWith` combina el índice con la cantidad
+-- Para cada posición de la lista de xs, `zipWith` combina el índice con la cantidad,
 -- y genera el casillero correspondiente con sus límites y porcentaje.
 -- Tenemos tres casos ya que tenemos:
 -- 1- El primer casillero que va de -inf al primer valor.

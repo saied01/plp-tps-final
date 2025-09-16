@@ -65,6 +65,15 @@ eval = foldExpr fCon fRang fSum fRest fMult fDiv
 
 -- | @armarHistograma m n f g@ arma un histograma con @m@ casilleros
 -- a partir del resultado de tomar @n@ muestras de @f@ usando el generador @g@.
+
+-- Se calcula la lista de números reales (xs) y el generador (gen') con la función "muestra"
+-- con la función (f), el número entero (cantDeMuestras) y el generador (g).
+-- La lista (xs) son todos los resultados de aplicar (cantDeMuestras) veces la función (f) al generador (g).
+-- El generador (gen') es el generador (g) luego de aplicarle (cantDeMuestras) veces la función (f).
+-- Se calcula el rango (piso,techo) de la lista (xs) con la función "rango95".
+-- Devuelve la tupla con el histograma generado con la función (histograma) ya implementada,
+-- y el generador (gen') ya mencionado
+
 armarHistograma :: Int -> Int -> G Float -> G Histograma
 armarHistograma casilleros cantDeMuestras f g =  (histograma casilleros (piso, techo) xs, gen')
   where
@@ -75,6 +84,13 @@ armarHistograma casilleros cantDeMuestras f g =  (histograma casilleros (piso, t
 -- | @evalHistograma m n e g@ evalúa la expresión @e@ usando el generador @g@ @n@ veces
 -- devuelve un histograma con @m@ casilleros y rango calculado con @rango95@ para abarcar el 95% de confianza de los valores.
 -- @n@ debe ser mayor que 0.
+
+-- Se evalúa la expresión (expr) utilizando la función "eval", que devuelve una función de tipo G Float.
+-- Se arma el histograma utilizando la función "armarHistograma" con el número entero (casilleros) del input,
+-- el número entero (cantDeEvaluaciones) del input, y la expresión evaluada anteriormente mencionada.
+-- Devuelve una función que recibe un generador, evalúa la expresión usando ese generador, y arma el histograma
+-- de la expresión evaluada.
+
 evalHistograma :: Int -> Int -> Expr -> G Histograma
 evalHistograma casilleros cantDeEvaluacinoes expr = armarHistograma casilleros cantDeEvaluacinoes expresionEvaluada
   where
@@ -86,6 +102,22 @@ evalHistograma casilleros cantDeEvaluacinoes expr = armarHistograma casilleros c
 
 -- >>> evalHistograma 11 10000 (Suma (Rango 1 5) (Rango 100 105)) (genNormalConSemilla 0)
 -- (Histograma 102.273895 0.5878462 [239,288,522,810,1110,1389,1394,1295,1076,793,520,310,254],<Gen>)
+
+-- Toma una expresión y la recorre recursivamente usando la función "recrExpr", construyendo el
+-- String que represente correctamente las operaciones de la expresión.
+
+-- Las dos primeras funciones de "recrExpr" son los casos base de una constante Const y un rango Rango.
+-- Para las constantes, simplemente se le aplica "show", que dado un Float, lo devuelve como String.
+-- Para los rangos, también se aplica "show" a ambos números, y se los concatena con un '~' en el medio.  
+
+-- Para evitar usar el uso de paréntesis innecesarios en el resto de expresiones, cada función de "recrExpr"
+-- utiliza "maybeParen" y "constructor".
+-- La función "maybeParen" recibe un Bool, que si es True coloca paréntesis, y si es False no lo hace.
+-- La función "constructor" recibe una expresión y devuelve su contructor.
+-- Este se usa para saber si las expresiones de cada lado de las operaciones
+-- son un tipo de operación que debería llevar paréntesis o no.
+-- En el caso de la suma, resta, y multiplicación, se aplica paréntesis si hay una resta, división, o multiplicación.
+-- En el caso de la división, se aplica paréntesis para todas las operaciones, pero no para las constantes o los rangos.
 
 mostrar :: Expr -> String
 mostrar = recrExpr (\x -> show x) (\x y -> show x ++ "~" ++ show y)
