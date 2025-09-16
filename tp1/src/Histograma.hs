@@ -29,10 +29,20 @@ import Util
 data Histograma = Histograma Float Float [Int]
   deriving (Show, Eq)
 
--- | Inicializa un histograma vacío con @n@ casilleros para representar
--- valores en el rango y 2 casilleros adicionales para los valores fuera del rango.
--- Require que @l < u@ y @n >= 1@.
--- vacio :: Int -> (Float, Float) -> Histograma
+-- | Construye un histograma vacío.
+-- 
+-- Precondiciones:
+--   cantidadDeElem >= 1@
+--   piso < techo
+--
+-- El histograma resultante tiene:
+--   cantidadDeElem casilleros y  2 casilleros adicionales 
+--   para valores fuera de rango (con - y + infinito).
+--   Todos los casilleros inicializados en 0.
+--
+-- El tamaño del salto entre casilleros se calcula como:
+--   (techo - piso) / cantidadDeElem
+
 vacio :: Int -> (Float, Float) -> Histograma
 vacio cantidadDeElem (piso, techo)
   | cantidadDeElem >= 1 && piso < techo = Histograma piso salto (replicate (cantidadDeElem + 2) 0)
@@ -41,8 +51,13 @@ vacio cantidadDeElem (piso, techo)
     salto = (techo - piso) / fromIntegral cantidadDeElem
 
 
---                         x       piso     salto      indice mas alto       resultado
--- averiguarIndiceDeX :: Float -> Float ->  Float ->        Int      ->      Int
+-- | Dado un valor x, un piso, el salto entre casilleros 
+-- y el indice más alto disponible, calcula el indice del casillero
+-- en el que debería caer x.
+--
+-- Si x es menor al piso, devuelve 0.
+-- Si x es mayor o igual al limite superior, devuelve el indice más alto. 
+
 averiguarIndiceDeX :: Float -> Float -> Float -> Int -> Int
 averiguarIndiceDeX x piso salto indiceActual
   | x >= piso + (salto * (fromIntegral indiceActual - 1)) = indiceActual
@@ -51,7 +66,9 @@ averiguarIndiceDeX x piso salto indiceActual
 
 
 
--- | Agrega un valor al histograma.
+-- | Incrementa en 1 el casillero correspondiente al valor dado.
+-- Usa 'averiguarIndiceDeX' para determinar el índice en el histograma
+-- donde cae el valor, y luego actualiza ese casillero. 
 agregar :: Float -> Histograma -> Histograma
 agregar x (Histograma i t xs)  = (Histograma i t (actualizarElem indice f xs))
     where
