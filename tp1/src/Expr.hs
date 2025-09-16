@@ -41,6 +41,12 @@ recrExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
   where rec = recrExpr fCon fRang fSum fRest fMult fDiv
 
 
+-- Los esquemas de recursion estructural(foldr) y explicita(recr) del tipo de dato definido -> Expr.
+-- La idea es que foldExpr en cada constructor reemplaza los subárboles por los resultados ya procesados,
+-- entonces las funciones que se definen usando foldExpr solo dependen de los valores reducidos de los hijos.
+-- Mientras que en recrExpr, además del resultado recursivo, también recibe los subárboles originales, lo cual lo hace más general.
+
+
 foldExpr :: (Float -> b) -> (Float -> Float -> b) -> 
             (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> (b -> b -> b) -> Expr -> b
 foldExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
@@ -52,6 +58,16 @@ foldExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
     Div e1 e2   -> fDiv (rec e1) (rec e2)
   where
     rec = foldExpr fCon fRang fSum fRest fMult fDiv
+
+
+
+
+-- Cada operación (suma, resta, etc.) debe devolver un par (Float, Gen):
+-- el resultado numérico y el generador actualizado. 
+-- Primero se evalúa el subárbol izquierdo con f1 g, obteniendo (v1, g1). 
+-- Luego se evalúa el derecho con f2 g1 = (v2, g2), usando el generador ya avanzado. 
+-- Con v1 y v2 se aplica la operación aritmética y se obtiene vf, 
+-- que junto con g2 se devuelve como (vf, g2).
 
 
 eval :: Expr -> G Float
