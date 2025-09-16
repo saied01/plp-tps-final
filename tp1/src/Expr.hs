@@ -41,7 +41,7 @@ recrExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
   where rec = recrExpr fCon fRang fSum fRest fMult fDiv
 
 
--- Los esquemas de recursion estructural(foldr) y explicita(recr) del tipo de dato definido -> Expr.
+-- Los esquemas de recursión estructural (foldr) y explícita (recr) del tipo de dato definido -> Expr.
 -- La idea es que foldExpr en cada constructor reemplaza los subárboles por los resultados ya procesados,
 -- entonces las funciones que se definen usando foldExpr solo dependen de los valores reducidos de los hijos.
 -- Mientras que en recrExpr, además del resultado recursivo, también recibe los subárboles originales, lo cual lo hace más general.
