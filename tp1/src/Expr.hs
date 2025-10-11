@@ -69,15 +69,14 @@ foldExpr fCon fRang fSum fRest fMult fDiv expr = case expr of
 -- Con v1 y v2 se aplica la operación aritmética y se obtiene vf, 
 -- que junto con g2 se devuelve como (vf, g2).
 
-
 eval :: Expr -> G Float
-eval = foldExpr fCon fRang fSum fRest fMult fDiv
-      where fCon x g = (x,g)
-            fRang x y g = dameUno (x,y) g
-            fSum f1 f2 g = (fst (f1 g) + fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g))))
-            fRest f1 f2 g = (fst (f1 g) - fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g))))
-            fMult f1 f2 g = (fst (f1 g) * fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g))))
-            fDiv f1 f2 g = (fst (f1 g) / fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g))))
+eval = foldExpr fCon fRang (fOp (+)) (fOp (-)) (fOp (*)) (fOp (/))
+  where
+    fCon x g = (x, g)
+    fRang x y g = dameUno (x, y) g
+    fOp op f1 f2 g = (fst (f1 g) `op` fst (f2 (snd (f1 g))), snd (f2 (snd (f1 g))))
+
+
 
 -- | @armarHistograma m n f g@ arma un histograma con @m@ casilleros
 -- a partir del resultado de tomar @n@ muestras de @f@ usando el generador @g@.
@@ -136,13 +135,13 @@ evalHistograma casilleros cantDeEvaluacinoes expr = armarHistograma casilleros c
 -- En el caso de la división, se aplica paréntesis para todas las operaciones, pero no para las constantes o los rangos.
 
 mostrar :: Expr -> String
-mostrar = recrExpr (\x -> show x) (\x y -> show x ++ "~" ++ show y)
-                    (\con1 con2 ac1 ac2 -> maybeParen (constructor con1 `elem` [CEResta, CEDiv, CEMult]) ac1 ++ " + " ++ maybeParen (constructor con2 `elem` [CEResta, CEDiv, CEMult]) ac2)                   
-                    (\con1 con2 ac1 ac2 -> maybeParen (constructor con1 `elem` [CEResta, CEDiv, CEMult]) ac1 ++ " - " ++ maybeParen (constructor con2 `elem` [CEResta, CEDiv, CEMult]) ac2)                   
-                    (\con1 con2 ac1 ac2 -> maybeParen (constructor con1 `elem` [CEResta, CEDiv, CEMult]) ac1 ++ " * " ++ maybeParen (constructor con2 `elem` [CEResta, CEDiv, CEMult]) ac2)                   
-                    (\con1 con2 ac1 ac2 -> maybeParen (constructor con1 `elem` [CESuma, CEResta, CEDiv, CEMult]) ac1 ++ " / " ++ maybeParen (constructor con2 `elem` [CESuma, CEResta, CEDiv, CEMult]) ac2)
+mostrar = recrExpr show (\x y -> show x ++ "~" ++ show y) (f1 " + ") (f1 " - ") (f1 " * ") f2
+  where
+    f1 op = \con1 con2 ac1 ac2 ->
+      maybeParen (constructor con1 `elem` [CEResta, CEDiv, CEMult]) ac1 ++ op ++ maybeParen (constructor con2 `elem` [CEResta, CEDiv, CEMult]) ac2
 
-
+    f2 = \con1 con2 ac1 ac2 ->
+      maybeParen (constructor con1 `elem` [CESuma, CEResta, CEDiv, CEMult]) ac1 ++ " / " ++ maybeParen (constructor con2 `elem` [CESuma, CEResta, CEDiv, CEMult]) ac2
 
 
 
