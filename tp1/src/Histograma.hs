@@ -44,11 +44,10 @@ data Histograma = Histograma Float Float [Int]
 --   (techo - piso) / cantidadDeElem
 
 vacio :: Int -> (Float, Float) -> Histograma
-vacio cantidadDeElem (piso, techo)
-  | cantidadDeElem >= 1 && piso < techo = Histograma piso salto (replicate (cantidadDeElem + 2) 0)
-  | otherwise = error "vacio: requiere cantidadDeElem >= 1 y l < u"
+vacio cantidadDeElem (piso, techo) = Histograma piso salto (replicate (cantidadDeElem + 2) 0)
   where
     salto = (techo - piso) / fromIntegral cantidadDeElem
+
 
 
 -- | Dado un valor x, un piso, el salto entre casilleros 
