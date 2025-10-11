@@ -57,22 +57,24 @@ vacio cantidadDeElem (piso, techo) = Histograma piso salto (replicate (cantidadD
 -- Si x es menor al piso, devuelve 0.
 -- Si x es mayor o igual al limite superior, devuelve el indice más alto. 
 
-averiguarIndiceDeX :: Float -> Float -> Float -> Int -> Int
-averiguarIndiceDeX x piso salto indiceActual
-  | x >= piso + (salto * (fromIntegral indiceActual - 1)) = indiceActual
-  | indiceActual == 0 = 0
-  | otherwise = averiguarIndiceDeX x piso salto (indiceActual-1)
-
-
-
 -- | Incrementa en 1 el casillero correspondiente al valor dado.
 -- Usa 'averiguarIndiceDeX' para determinar el índice en el histograma
 -- donde cae el valor, y luego actualiza ese casillero. 
 agregar :: Float -> Histograma -> Histograma
-agregar x (Histograma i t xs)  = (Histograma i t (actualizarElem indice f xs))
-    where
-      f x = x + 1
-      indice = averiguarIndiceDeX x i t ((length xs) - 1)
+agregar x (Histograma i t xs) =
+  Histograma i t (actualizarElem indice (\y -> y + 1) xs)
+  where
+    indice = averiguarIndiceDeX x i t (length xs - 1)
+
+
+-- | Arma un histograma a partir de una lista de números reales con la cantidad de casilleros y rango indicados.
+-- Como ya tenemos definidas las funciones para armar un histograma vacío, y una para agregar un valor a un histograma dado,
+-- simplemente se crea un histograma vacío y se agregan todos los valores usando foldr junto con la función agregar.
+histograma :: Int -> (Float, Float) -> [Float] -> Histograma
+histograma casilleros (piso, techo) xs = foldr agregar obj_histograma xs
+  where
+    obj_histograma = vacio casilleros (piso, techo)
+
 
 -- | Arma un histograma a partir de una lista de números reales con la cantidad de casilleros y rango indicados.
 -- Como ya tenemos definidas las funciones para armar un histograma vacío, y una para agregar un valor a un histograma dado,
