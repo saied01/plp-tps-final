@@ -135,16 +135,11 @@ evalHistograma casilleros cantDeEvaluacinoes expr = armarHistograma casilleros c
 -- En el caso de la división, se aplica paréntesis para todas las operaciones, pero no para las constantes o los rangos.
 
 mostrar :: Expr -> String
-mostrar = recrExpr show (\x y -> show x ++ "~" ++ show y) (f1 " + ") (f1 " - ") (f1 " * ") f2
+mostrar = recrExpr show (\x y -> show x ++ "~" ++ show y) (f1 " + ") (f1 " - ") (f1 " * ") (f1 " / ")
   where
-    f1 op = \con1 con2 ac1 ac2 ->
-      maybeParen (constructor con1 `elem` [CEResta, CEDiv, CEMult]) ac1 ++ op ++ maybeParen (constructor con2 `elem` [CEResta, CEDiv, CEMult]) ac2
-
-    f2 = \con1 con2 ac1 ac2 ->
-      maybeParen (constructor con1 `elem` [CESuma, CEResta, CEDiv, CEMult]) ac1 ++ " / " ++ maybeParen (constructor con2 `elem` [CESuma, CEResta, CEDiv, CEMult]) ac2
-
-
-
+    f1 op | op == " / " = fExpr [CESuma, CEResta, CEDiv, CEMult] op
+          | otherwise = fExpr [CEResta, CEDiv, CEMult] op
+    fExpr listaCons op con1 con2 ac1 ac2 = maybeParen (constructor con1 `elem` listaCons) ac1 ++ op ++ maybeParen (constructor con2 `elem` listaCons) ac2
 
 
 
