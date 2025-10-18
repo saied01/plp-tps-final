@@ -282,31 +282,18 @@ testsParse =
     ]
 
 testsMostrar :: Test
-testsMostrar =
-  test
-    [ mostrar (Div (Suma (Rango 1 5) (Mult (Const 3) (Rango 100 105))) (Const 2))
-        ~?= "(1.0~5.0 + (3.0 * 100.0~105.0)) / 2.0",
-      mostrar (Suma (Suma (Suma (Const 1) (Const 2)) (Const 3)) (Const 4))
-        ~?= "1.0 + 2.0 + 3.0 + 4.0",
-      mostrar (Suma (Const 1) (Suma (Const 2) (Suma (Const 3) (Const 4))))
-        ~?= "1.0 + 2.0 + 3.0 + 4.0",
-      mostrar (Suma (Suma (Const 1) (Const 2)) (Suma (Const 3) (Const 4)))
-        ~?= "1.0 + 2.0 + 3.0 + 4.0",
-      mostrar (Mult (Mult (Mult (Const 1) (Const 2)) (Const 3)) (Const 4))
-        ~?= "1.0 * 2.0 * 3.0 * 4.0",
-      mostrar (Mult (Const 1) (Mult (Const 2) (Mult (Const 3) (Const 4))))
-        ~?= "1.0 * 2.0 * 3.0 * 4.0",
-      mostrar (Mult (Mult (Const 1) (Const 2)) (Mult (Const 3) (Const 4)))
-        ~?= "1.0 * 2.0 * 3.0 * 4.0",
-      mostrar (Resta (Resta (Const 1) (Const 2)) (Resta (Const 3) (Const 4)))
-        ~?= "(1.0 - 2.0) - (3.0 - 4.0)",
-      mostrar (Resta (Resta (Resta (Const 1) (Const 2)) (Const 3)) (Const 4))
-        ~?= "((1.0 - 2.0) - 3.0) - 4.0",
-      mostrar (Suma (Mult (Suma (Const 1) (Const 2)) (Const 3)) (Const 4))
-        ~?= "((1.0 + 2.0) * 3.0) + 4.0",
-      mostrar (Mult (Suma (Suma (Const 1) (Const 2)) (Const 3)) (Const 4))
-        ~?= "(1.0 + 2.0 + 3.0) * 4.0"
-    ]
+testsMostrar = test
+  [ mostrar (Suma (Suma (Suma (Const 1) (Const 2)) (Const 3)) (Const 4))
+      ~?= "1.0 + 2.0 + 3.0 + 4.0"
+  , mostrar (Suma (Const 1) (Suma (Const 2) (Suma (Const 3) (Const 4))))
+      ~?= "1.0 + 2.0 + 3.0 + 4.0"
+  , mostrar (Div (Suma (Rango 1 5) (Mult (Const 3) (Rango 100 105))) (Const 2))
+      ~?= "(1.0∼5.0 + (3.0 * 100.0∼105.0)) / 2.0"
+  , mostrar (Resta (Resta (Const 1) (Const 2)) (Resta (Const 3) (Const 4)))
+      ~?= "(1.0 - 2.0) - (3.0 - 4.0)"
+  , mostrar (Resta (Resta (Resta (Const 1) (Const 2)) (Const 3)) (Const 4))
+      ~?= "((1.0 - 2.0) - 3.0) - 4.0"
+  ]
 
 testsMostrarFloat :: Test
 testsMostrarFloat =
