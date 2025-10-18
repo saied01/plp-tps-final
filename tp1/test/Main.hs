@@ -193,7 +193,7 @@ testsRecr =
 testsFold :: Test
 testsFold =
   test
-    [ -- Evaluación simple con foldExpr
+    [
       foldExpr id (\x y -> x + y) (+) (-) (*) (/) (Const 5.0) ~?= 5.0,
       foldExpr id (\x y -> x + y) (+) (-) (*) (/) (Rango 1 5) ~?= 6.0,
       foldExpr id (\x y -> x + y) (+) (-) (*) (/) (Suma (Const 2) (Const 3)) ~?= 5.0,
@@ -206,59 +206,49 @@ testsEval =
   test
     [ fst (eval (Suma (Rango 1 5) (Const 1)) genFijo) ~?= 4.0,
       fst (eval (Suma (Rango 1 5) (Const 1)) (genNormalConSemilla 0)) ~?= 3.7980492,
-      -- el primer rango evalua a 2.7980492 y el segundo a 3.1250308
       fst (eval (Suma (Rango 1 5) (Rango 1 5)) (genNormalConSemilla 0)) ~?= 5.92308,
-      -- Constante sola
       fst (eval (Const 10) genFijo) ~?= 10.0,
-      -- Multiplicación
       fst (eval (Mult (Const 3) (Const 4)) genFijo) ~?= 12.0,
-      -- División
       fst (eval (Div (Const 10) (Const 2)) (genNormalConSemilla 0)) ~?= 5.0
    ]
 
 testsArmarHistograma :: Test
 testsArmarHistograma =
   test
-    [ -- Histograma simple con función constante
+    [
       let (h, _) = armarHistograma 3 10 (\g -> (5.0, g)) genFijo
           cs = casilleros h
-      in casCantidad (cs !! 2) ~?= 10, -- Todos los valores deben estar en un casillero
+      in casCantidad (cs !! 2) ~?= 10,
       
-      -- Histograma con generador de rangos
       let (h, _) = armarHistograma 5 100 (dameUno (1, 5)) genFijo
           cs = casilleros h
-      in sum (map casCantidad cs) ~?= 100, -- Debe haber 100 valores en total
+      in sum (map casCantidad cs) ~?= 100,
       
-      -- Verificar que el rango cubre el 95% con genNormalConSemilla
       let (h, _) = armarHistograma 11 1000 (dameUno (1, 5)) (genNormalConSemilla 0)
           cs = casilleros h
       in sum (map casCantidad cs) ~?= 1000,
       
-      -- Histograma con más casilleros
       let (h, _) = armarHistograma 10 500 (dameUno (0, 100)) (genNormalConSemilla 1)
           cs = casilleros h
-      in length cs ~?= 12 -- 10 casilleros finitos + 2 infinitos
+      in length cs ~?= 12
     ]
 
 testsEvalHistograma :: Test
 testsEvalHistograma =
   test
-    [ -- Verificar que evalHistograma genera el número correcto de muestras
+    [
       let (h, _) = evalHistograma 11 100 (Suma (Const 1) (Const 2)) genFijo
           cs = casilleros h
       in sum (map casCantidad cs) ~?= 100,
       
-      -- Expresión simple con constante
       let (h, _) = evalHistograma 5 50 (Const 10) genFijo
           cs = casilleros h
       in sum (map casCantidad cs) ~?= 50,
       
-      -- Expresión con rango
       let (h, _) = evalHistograma 11 200 (Rango 1 5) (genNormalConSemilla 0)
           cs = casilleros h
       in sum (map casCantidad cs) ~?= 200,
       
-      -- Expresión compleja
       let (h, _) = evalHistograma 11 1000 (Suma (Rango 1 5) (Rango 100 105)) (genNormalConSemilla 0)
           cs = casilleros h
       in sum (map casCantidad cs) ~?= 1000
