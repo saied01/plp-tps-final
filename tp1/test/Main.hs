@@ -27,8 +27,8 @@ allTests =
       "Ej 6 - Histograma.casilleros" ~: testsCasilleros,
     "Ej 7 - Expr.recrExpr" ~: testsRecr,
     "Ej 7 - Expr.foldExpr" ~: testsFold,
-      "Ej 8 - Expr.eval" ~: testsEval
-      "Ej 9 - Expr.armarHistograma" ~: testsArmarHistograma
+      "Ej 8 - Expr.eval" ~: testsEval,
+      "Ej 9 - Expr.armarHistograma" ~: testsArmarHistograma,
       "Ej 10 - Expr.evalHistograma" ~: testsEvalHistograma,
       "Ej 11 - Expr.mostrar" ~: testsMostrar,
       "Expr.Parser.parse" ~: testsParse,
@@ -288,7 +288,7 @@ testsMostrar = test
   , mostrar (Suma (Const 1) (Suma (Const 2) (Suma (Const 3) (Const 4))))
       ~?= "1.0 + 2.0 + 3.0 + 4.0"
   , mostrar (Div (Suma (Rango 1 5) (Mult (Const 3) (Rango 100 105))) (Const 2))
-      ~?= "(1.0∼5.0 + (3.0 * 100.0∼105.0)) / 2.0"
+      ~?= "(1.0~5.0 + (3.0 * 100.0~105.0)) / 2.0"
   , mostrar (Resta (Resta (Const 1) (Const 2)) (Resta (Const 3) (Const 4)))
       ~?= "(1.0 - 2.0) - (3.0 - 4.0)"
   , mostrar (Resta (Resta (Resta (Const 1) (Const 2)) (Const 3)) (Const 4))
